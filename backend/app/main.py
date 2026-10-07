@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .database import Base, engine
+from .database import Base, engine, SessionLocal
+from . import models
 from .routers import (
     auth_router,
     listings_router,
@@ -12,6 +13,22 @@ from .routers import (
 )
 
 Base.metadata.create_all(bind=engine)
+
+
+def _seed_if_empty():
+    """On a fresh deploy the DB is empty — populate it with demo data."""
+    db = SessionLocal()
+    try:
+        has_data = db.query(models.Listing.id).first() is not None
+    finally:
+        db.close()
+    if not has_data:
+        from .seed import seed
+
+        seed()
+
+
+_seed_if_empty()
 
 app = FastAPI(title="Airbnb Clone API", version="1.0.0")
 
