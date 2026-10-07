@@ -9,3 +9,6 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.7"
+      # The repo checkout is read-only at runtime; keep SQLite on the writable /tmp disk.
+      - key: DATABASE_PATH
+        value: "/tmp/airbnb.db"

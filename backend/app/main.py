@@ -25,7 +25,7 @@ def _seed_if_empty():
     if not has_data:
         from .seed import seed
 
-        seed()
+        seed(reset=False)
 
 
 _seed_if_empty()

@@ -143,9 +143,12 @@ REVIEW_COMMENTS = [
 ]
 
 
-def seed():
+def seed(reset: bool = True):
     import os
-    if os.path.exists(DB_PATH):
+    # `reset` wipes the file for a clean CLI reseed. It must stay False when called
+    # at app startup: by then the engine already holds the DB open, and removing the
+    # file out from under it leaves SQLite with a stale handle ("readonly database").
+    if reset and os.path.exists(DB_PATH):
         os.remove(DB_PATH)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
